@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html>
+
 
 <!--<head>-->
 <!--  <title>Контакты</title>-->
@@ -62,4 +61,3 @@
 <!--  </footer>-->
 <!--</body>-->
 
-</html>
