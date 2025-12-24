@@ -1,66 +1,52 @@
 <?php
-namespace MyProject\Classes;
+namespace src\Classes;
 
 /**
- * Класс User представляет базового пользователя системы.
- * 
- * Содержит основные данные пользователя: имя, логин и пароль.
- * @package MyProject\Classes
- * @version 1.0
+ * Базовый класс User определяет ключевой профиль участника системы.
+ * * Инкапсулирует персональные данные (имя, логин, пароль) и логику их отображения.
+ * Включает механизм оповещения при завершении жизненного цикла объекта.
+ * * @package src\Classes
  */
-class User {
+class User
+{
     /**
-     * Имя пользователя.
-     * @var string
+     * Инициализация объекта через механизм Constructor Property Promotion.
+     * * Автоматически регистрирует переданные аргументы как свойства экземпляра.
+     * Устанавливает различные уровни доступа (public/private) для данных профиля.
+     * * @param string $name Отображаемое имя
+     * @param string $login Уникальное имя входа
+     * @param string $password Конфиденциальный пароль
      */
-    public $name;
-    
-    /**
-     * Логин для входа в систему.
-     * @var string
-     */
-    public $login;
-    
-    /**
-     * Пароль пользователя (защищённое свойство).
-     * @var string
-     * @access private
-     */
-    private $password;
-
-    /**
-     * Конструктор класса User.
-     * 
-     * Инициализирует объект пользователя с переданными данными.
-     * @param string $name Имя пользователя
-     * @param string $login Логин пользователя
-     * @param string $password Пароль пользователя
-     */
-    public function __construct($name, $login, $password) {
-        $this->name = $name;
-        $this->login = $login;
-        $this->password = $password;
+    public function __construct(
+        public string $name,
+        public string $login,
+        private string $password
+    ) {
+        // Тело конструктора пустое, так как свойства инициализированы в заголовке
     }
 
     /**
-     * Возвращает информацию о пользователе.
-     * 
-     * @return array Ассоциативный массив с данными пользователя
+     * Формирует визуальное представление данных пользователя.
+     * * Генерирует фрагмент HTML-разметки для вывода основных реквизитов на экран.
+     * Метод открыт для расширения в дочерних классах.
+     * * @return string Разметка с данными пользователя
      */
-    public function getInfo() {
-        return [
-            'name' => $this->name,
-            'login' => $this->login
-        ];
+    public function showInfo(): string
+    {
+        return "<div class=\"user-info\">
+                    <h3>User Info</h3>
+                    <p><strong>Name:</strong> {$this->name}</p>
+                    <p><strong>Login:</strong> {$this->login}</p>
+                </div>";
     }
 
     /**
-     * Деструктор класса User.
-     * 
-     * Вызывается при уничтожении объекта, выводит сообщение об удалении.
-     * @return void
+     * Финализатор объекта (деструктор).
+     * * Срабатывает в момент уничтожения ссылки на объект или при завершении работы скрипта.
+     * Служит для информирования о высвобождении ресурсов, связанных с аккаунтом.
      */
-    public function __destruct() {
-        echo "<div class='destruct-message'>Пользователь {$this->login} удалён.</div>";
+    public function __destruct()
+    {
+        echo "<p>Пользователь {$this->login} удален.</p>";
     }
 }
