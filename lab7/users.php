@@ -1,51 +1,52 @@
 <?php
-spl_autoload_register(function ($class) {
-    $classPath = str_replace('\\', '/', $class);
-    $file = __DIR__ . '/' . $classPath . '.php';
-    
-    if (file_exists($file)) {
-        require_once $file;
-    } else {
-        throw new Exception("Файл класса не найден: $file");
+namespace src\Classes;
+
+/**
+ * Базовый класс User определяет ключевой профиль участника системы.
+ * * Инкапсулирует персональные данные (имя, логин, пароль) и логику их отображения.
+ * Включает механизм оповещения при завершении жизненного цикла объекта.
+ * * @package src\Classes
+ */
+class User
+{
+    /**
+     * Инициализация объекта через механизм Constructor Property Promotion.
+     * * Автоматически регистрирует переданные аргументы как свойства экземпляра.
+     * Устанавливает различные уровни доступа (public/private) для данных профиля.
+     * * @param string $name Отображаемое имя
+     * @param string $login Уникальное имя входа
+     * @param string $password Конфиденциальный пароль
+     */
+    public function __construct(
+        public string $name,
+        public string $login,
+        private string $password
+    ) {
+        // Тело конструктора пустое, так как свойства инициализированы в заголовке
     }
-});
 
-use MyProject\Classes\User;
-use MyProject\Classes\SuperUser;
+    /**
+     * Формирует визуальное представление данных пользователя.
+     * * Генерирует фрагмент HTML-разметки для вывода основных реквизитов на экран.
+     * Метод открыт для расширения в дочерних классах.
+     * * @return string Разметка с данными пользователя
+     */
+    public function showInfo(): string
+    {
+        return "<div class=\"user-info\">
+                    <h3>User Info</h3>
+                    <p><strong>Name:</strong> {$this->name}</p>
+                    <p><strong>Login:</strong> {$this->login}</p>
+                </div>";
+    }
 
-$user1 = new User("Роман Киров", "rom", "12345");
-$user2 = new User("Анна  Игнатова", "anna", "54321");
-$superUser = new SuperUser("Администратор", "admin", "adminpass", "Главный");
-
-$userData1 = $user1->getInfo();
-$userData2 = $user2->getInfo();
-$superUserData = $superUser->getInfo();
-?>
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <title>Информация о пользователях</title>
-</head>
-<body>
-    <h1>Информация о пользователях</h1>
-
-
-    <div class="user">
-        <h3><?= htmlspecialchars($userData1['name']) ?></h3>
-        <p><strong>Логин:</strong> <?= htmlspecialchars($userData1['login']) ?></p>
-    </div>
-
-    <div class="user">
-        <h3><?= htmlspecialchars($userData2['name']) ?></h3>
-        <p><strong>Логин:</strong> <?= htmlspecialchars($userData2['login']) ?></p>
-    </div>
-
-    <h2>Суперпользователь</h2>
-    <div class="superuser">
-        <h3><?= htmlspecialchars($superUserData['name']) ?></h3>
-        <p><strong>Логин:</strong> <?= htmlspecialchars($superUserData['login']) ?></p>
-        <p><strong>Роль:</strong> <?= htmlspecialchars($superUserData['role']) ?></p>
-    </div>
-</body>
-</html>
+    /**
+     * Финализатор объекта (деструктор).
+     * * Срабатывает в момент уничтожения ссылки на объект или при завершении работы скрипта.
+     * Служит для информирования о высвобождении ресурсов, связанных с аккаунтом.
+     */
+    public function __destruct()
+    {
+        echo "<p>Пользователь {$this->login} удален.</p>";
+    }
+}
