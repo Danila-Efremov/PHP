@@ -13,8 +13,8 @@ spl_autoload_register(function ($class) {
 use MyProject\Classes\User;
 use MyProject\Classes\SuperUser;
 
-$user1 = new User("Иван Иванов", "ivan", "12345");
-$user2 = new User("Анна Петрова", "anna", "54321");
+$user1 = new User("Роман Киров", "rom", "12345");
+$user2 = new User("Анна  Игнатова", "anna", "54321");
 $superUser = new SuperUser("Администратор", "admin", "adminpass", "Главный");
 
 $userData1 = $user1->getInfo();
