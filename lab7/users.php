@@ -1,52 +1,49 @@
 <?php
+declare(strict_types=1);
 namespace src\Classes;
 
+require_once 'User.php';
+
 /**
- * Базовый класс User определяет ключевой профиль участника системы.
- * * Инкапсулирует персональные данные (имя, логин, пароль) и логику их отображения.
- * Включает механизм оповещения при завершении жизненного цикла объекта.
+ * SuperUser — модель пользователя с административными полномочиями.
+ * * Данный класс расширяет базовый класс User, внедряя понятие "роль" (role).
+ * Модифицирует стандартный вывод данных через метод showInfo().
  * * @package src\Classes
  */
-class User
+class SuperUser extends User
 {
     /**
-     * Инициализация объекта через механизм Constructor Property Promotion.
-     * * Автоматически регистрирует переданные аргументы как свойства экземпляра.
-     * Устанавливает различные уровни доступа (public/private) для данных профиля.
-     * * @param string $name Отображаемое имя
-     * @param string $login Уникальное имя входа
-     * @param string $password Конфиденциальный пароль
+     * Создание нового экземпляра супер-пользователя.
+     * * Использует возможности PHP 8.0+ по продвижению свойств (constructor property promotion) 
+     * для параметра role. Базовые данные передаются в конструктор родителя.
+     * * @param string $name Имя субъекта
+     * @param string $login Идентификатор для входа
+     * @param string $password Секретный ключ доступа
+     * @param string $role Назначенные права/группа доступа
      */
     public function __construct(
-        public string $name,
-        public string $login,
-        private string $password
+        string $name,
+        string $login,
+        string $password,
+        public string $role
     ) {
-        // Тело конструктора пустое, так как свойства инициализированы в заголовке
+        parent::__construct($name, $login, $password);
+        // Инициализация $this->role происходит автоматически
     }
 
     /**
-     * Формирует визуальное представление данных пользователя.
-     * * Генерирует фрагмент HTML-разметки для вывода основных реквизитов на экран.
-     * Метод открыт для расширения в дочерних классах.
-     * * @return string Разметка с данными пользователя
+     * Генерирует расширенную карточку пользователя в формате HTML.
+     * * Дополняет базовый список характеристик текущей ролью пользователя.
+     * Возвращает структурированный блок для отображения в интерфейсе.
+     * * @return string Сформированная HTML-разметка
      */
     public function showInfo(): string
     {
-        return "<div class=\"user-info\">
-                    <h3>User Info</h3>
+        return "<div class=\"super-user-info\">
+                    <h3>Super User Info</h3>
                     <p><strong>Name:</strong> {$this->name}</p>
                     <p><strong>Login:</strong> {$this->login}</p>
+                    <p><strong>Role:</strong> {$this->role}</p>
                 </div>";
-    }
-
-    /**
-     * Финализатор объекта (деструктор).
-     * * Срабатывает в момент уничтожения ссылки на объект или при завершении работы скрипта.
-     * Служит для информирования о высвобождении ресурсов, связанных с аккаунтом.
-     */
-    public function __destruct()
-    {
-        echo "<p>Пользователь {$this->login} удален.</p>";
     }
 }
