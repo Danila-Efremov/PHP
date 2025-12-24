@@ -1,46 +1,49 @@
 <?php
-namespace MyProject\Classes;
+declare(strict_types=1);
+namespace src\Classes;
 
-use MyProject\Classes\User;
+require_once 'User.php';
 
 /**
- * Класс SuperUser представляет администратора системы.
- * 
- * Наследует от класса User и добавляет функциональность роли.
- * @package MyProject\Classes
- * @extends User
- * @version 1.0
+ * SuperUser — модель пользователя с административными полномочиями.
+ * * Данный класс расширяет базовый класс User, внедряя понятие "роль" (role).
+ * Модифицирует стандартный вывод данных через метод showInfo().
+ * * @package src\Classes
  */
-class SuperUser extends User {
+class SuperUser extends User
+{
     /**
-     * Роль пользователя в системе (например: администратор, модератор).
-     * @var string
+     * Создание нового экземпляра супер-пользователя.
+     * * Использует возможности PHP 8.0+ по продвижению свойств (constructor property promotion) 
+     * для параметра role. Базовые данные передаются в конструктор родителя.
+     * * @param string $name Имя субъекта
+     * @param string $login Идентификатор для входа
+     * @param string $password Секретный ключ доступа
+     * @param string $role Назначенные права/группа доступа
      */
-    public $role;
-
-    /**
-     * Конструктор класса SuperUser.
-     * 
-     * @param string $name Имя суперпользователя
-     * @param string $login Логин суперпользователя
-     * @param string $password Пароль суперпользователя
-     * @param string $role Роль суперпользователя
-     */
-    public function __construct($name, $login, $password, $role) {
+    public function __construct(
+        string $name,
+        string $login,
+        string $password,
+        public string $role
+    ) {
         parent::__construct($name, $login, $password);
-        $this->role = $role;
+        // Инициализация $this->role происходит автоматически
     }
 
     /**
-     * Возвращает расширенную информацию о суперпользователе.
-     * 
-     * Переопределяет метод родительского класса, добавляя информацию о роли.
-     * @return array Ассоциативный массив с данными суперпользователя
-     * @see User::getInfo()
+     * Генерирует расширенную карточку пользователя в формате HTML.
+     * * Дополняет базовый список характеристик текущей ролью пользователя.
+     * Возвращает структурированный блок для отображения в интерфейсе.
+     * * @return string Сформированная HTML-разметка
      */
-    public function getInfo() {
-        $info = parent::getInfo();
-        $info['role'] = $this->role;
-        return $info;
+    public function showInfo(): string
+    {
+        return "<div class=\"super-user-info\">
+                    <h3>Super User Info</h3>
+                    <p><strong>Name:</strong> {$this->name}</p>
+                    <p><strong>Login:</strong> {$this->login}</p>
+                    <p><strong>Role:</strong> {$this->role}</p>
+                </div>";
     }
 }
