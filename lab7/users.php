@@ -1,49 +1,40 @@
 <?php
 declare(strict_types=1);
-namespace src\Classes;
 
-require_once 'User.php';
+// 1. Исправляем namespace здесь (было App, стало src)
+use src\Classes\User;
+use src\Classes\SuperUser;
 
-/**
- * SuperUser — модель пользователя с административными полномочиями.
- * * Данный класс расширяет базовый класс User, внедряя понятие "роль" (role).
- * Модифицирует стандартный вывод данных через метод showInfo().
- * * @package src\Classes
- */
-class SuperUser extends User
-{
-    /**
-     * Создание нового экземпляра супер-пользователя.
-     * * Использует возможности PHP 8.0+ по продвижению свойств (constructor property promotion) 
-     * для параметра role. Базовые данные передаются в конструктор родителя.
-     * * @param string $name Имя субъекта
-     * @param string $login Идентификатор для входа
-     * @param string $password Секретный ключ доступа
-     * @param string $role Назначенные права/группа доступа
-     */
-    public function __construct(
-        string $name,
-        string $login,
-        string $password,
-        public string $role
-    ) {
-        parent::__construct($name, $login, $password);
-        // Инициализация $this->role происходит автоматически
+spl_autoload_register(function ($class): void {
+    // 2. Упрощаем автозагрузчик. 
+    // Поскольку namespace (src\Classes) теперь совпадает с папкой (src/Classes), 
+    // нам просто нужно заменить обратные слэши на прямые.
+    $file = __DIR__ . '/' . str_replace('\\', '/', $class) . '.php';
+    
+    if (file_exists($file)) {
+        require $file;
     }
+});
 
-    /**
-     * Генерирует расширенную карточку пользователя в формате HTML.
-     * * Дополняет базовый список характеристик текущей ролью пользователя.
-     * Возвращает структурированный блок для отображения в интерфейсе.
-     * * @return string Сформированная HTML-разметка
-     */
-    public function showInfo(): string
-    {
-        return "<div class=\"super-user-info\">
-                    <h3>Super User Info</h3>
-                    <p><strong>Name:</strong> {$this->name}</p>
-                    <p><strong>Login:</strong> {$this->login}</p>
-                    <p><strong>Role:</strong> {$this->role}</p>
-                </div>";
-    }
-}
+echo "<!DOCTYPE html>
+<html lang='ru'>
+<head>
+    <meta charset='UTF-8'>
+    <title>User Info</title>
+    <link rel=\"stylesheet\" href=\"css/style.css\">
+</head>
+<body>";
+
+// Эти вызовы теперь сработают, так как они ссылаются на src\Classes
+$user1 = new User("Роман", "rom", "pass1");
+$user2 = new User("Анна", "anna", "pass2");
+
+echo $user1->showInfo();
+echo $user2->showInfo();
+
+$user = new SuperUser("Admin", "w_admin", "pass4", "administrator");
+echo $user->showInfo();
+
+unset($user1, $user2, $user);
+
+echo "</body></html>";
