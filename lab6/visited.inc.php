@@ -1,18 +1,25 @@
 <?php
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
+declare(strict_types=1);
+// Код для всех страниц - вывод информации о посещенных страницах
 
-if (isset($_SESSION['visited_pages']) && count($_SESSION['visited_pages']) > 0) {
-?>
-    <h3>Список посещённых страниц:</h3>
-    <ul>
-        <?php foreach ($_SESSION['visited_pages'] as $page) : ?>
-            <li><?php echo htmlspecialchars($page); ?></li>
-        <?php endforeach; ?>
-    </ul>
-<?php
-} else {
-    echo '<p>Список посещённых страниц пуст.</p>';
-}
-?>
+/*
+ЗАДАНИЕ 2
+- В случае сохранения данных 
+	- в массив, проверьте, существует ли он в сессии
+	- в строку, преобразуйте её в массив
+- Выводите в цикле список всех посещённых пользователем страниц
+
+*/
+
+echo "<h2>Список посещённых страниц</h2>";
+
+
+if (isset($_SESSION['visitedPages']) && count($_SESSION['visitedPages']) > 0) {
+    
+	echo "<ul>";
+    foreach ($_SESSION['visitedPages'] as $page)
+        echo "<li>$page</li>";
+    echo "</ul>";
+	
+} else
+    echo "<p>Вы пока не посетили ни одну страницу :(</p>";

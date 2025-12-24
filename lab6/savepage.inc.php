@@ -1,15 +1,18 @@
 <?php
+declare(strict_types=1);
+// Код для всех страниц - сохранение информации о посещенных страницах
+/*
+ЗАДАНИЕ 1
+- Создайте в сессии либо 
+	- массив для хранения всех посещенных страниц и сохраните в качестве его очередного элемента путь к текущей странице. 
+	- строку с уникальным разделителем и последовательно её дополняйте
+
+*/
+
+if (!isset($_SESSION['visitedPages']))
+	$_SESSION['visitedPages'] = [];
+
+
 $currentPage = $_SERVER['REQUEST_URI'];
 
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
-
-if (!isset($_SESSION['visited_pages'])) {
-    $_SESSION['visited_pages'] = []; 
-}
-
-if (empty($_SESSION['visited_pages']) || end($_SESSION['visited_pages']) !== $currentPage) {
-    $_SESSION['visited_pages'][] = $currentPage;
-}
-?>
+$_SESSION['visitedPages'][] = $currentPage;
